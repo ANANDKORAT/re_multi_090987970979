@@ -1,0 +1,134 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Spinner.css */
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; 
+  height: calc(100vh - 381px);
+}
+
+
+/* Roller */
+
+.loader--roller {
+  display: inline-block;
+  position: relative;
+  height: 64px;
+  width: 64px;
+}
+
+.loader--roller div {
+  animation: loader--roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  transform-origin: 32px 32px;
+}
+
+.loader--roller div:after {
+  display: block;
+  position: absolute;
+  border-radius: 50%;
+  content: " ";
+  margin: -3px 0 0 -3px;
+  height: 6px;
+  width: 6px;
+}
+.loader--roller div:after
+{
+    background: #058077;
+}
+
+.loader--roller div:nth-child(1) {
+  animation-delay: -0.036s;
+}
+
+.loader--roller div:nth-child(1):after {
+  top: 50px;
+  left: 50px;
+}
+
+.loader--roller div:nth-child(2) {
+  animation-delay: -0.072s;
+}
+
+.loader--roller div:nth-child(2):after {
+  top: 54px;
+  left: 45px;
+}
+
+.loader--roller div:nth-child(3) {
+  animation-delay: -0.108s;
+}
+
+.loader--roller div:nth-child(3):after {
+  top: 57px;
+  left: 39px;
+}
+
+.loader--roller div:nth-child(4) {
+  animation-delay: -0.144s;
+}
+
+.loader--roller div:nth-child(4):after {
+  top: 58px;
+  left: 32px;
+}
+
+.loader--roller div:nth-child(5) {
+  animation-delay: -0.18s;
+}
+
+.loader--roller div:nth-child(5):after {
+  top: 57px;
+  left: 25px;
+}
+
+.loader--roller div:nth-child(6) {
+  animation-delay: -0.216s;
+}
+
+.loader--roller div:nth-child(6):after {
+  top: 54px;
+  left: 19px;
+}
+
+.loader--roller div:nth-child(7) {
+  animation-delay: -0.252s;
+}
+
+.loader--roller div:nth-child(7):after {
+  top: 50px;
+  left: 14px;
+}
+
+.loader--roller div:nth-child(8) {
+  animation-delay: -0.288s;
+}
+
+.loader--roller div:nth-child(8):after {
+  top: 45px;
+  left: 10px;
+}
+
+@keyframes loader--roller {
+  0% {
+      transform: rotate(0deg);
+  }
+
+  100% {
+      transform: rotate(360deg);
+  }
+}
+
