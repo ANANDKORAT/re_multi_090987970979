@@ -595,8 +595,8 @@ const SingleProduct = () => {
                       <p style={{ textAlign: "center" }} className="mb-0">
                         <span
                           style={{
-                            color: "#000",
-                            marginRight: "5px",
+                            color: "#ff0000",
+                            marginRight: "8px",
                             textDecoration: "line-through",
                             fontWeight: "bold",
                           }}
@@ -617,7 +617,7 @@ const SingleProduct = () => {
                         </span>
                         <span
                           style={{
-                            color: "darkgreen",
+                            color: "white",
                             marginLeft: "5px",
                             fontWeight: "bold",
                           }}
