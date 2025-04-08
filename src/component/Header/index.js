@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import "./index.css";
 import Navbar from "react-bootstrap/Navbar";
@@ -37,7 +38,7 @@ const Header = () => {
     setIsProductDetails(location.pathname.indexOf("/single-product") > -1);
     setIsCategory(location.pathname.indexOf("/category") > -1);
     setIsWhishList(location.pathname.indexOf("/wishlist") > -1);
-    setThankYou(location.pathname.indexOf("/thankyou") > -1);
+    setThankYou(location.pathname.indexOf("/ThankYou") > -1);
     setOrderComfirm(location.pathname.indexOf("/order-comfirmation") > -1);
 
     handleProductData();
@@ -81,7 +82,7 @@ const Header = () => {
       <Navbar
         expand="lg"
         sticky="top"
-        className={`flex-column  custom-navbar ${
+        className={`flex-column  custom-navbar bg-white ${
           isProductDetails &&
           process.env.REACT_APP_SHOW_OFFER_BANNER == "yes" &&
           singleProduct?._id
@@ -89,7 +90,7 @@ const Header = () => {
             : ""
         }`}
         id="nav-look"
-        style={{ background: navThemeColor }}
+        style={{ "--nav-theme-color": navThemeColor }}
       >
         {/* Google g4tag live tracker */}
         {process.env.REACT_APP_G4 && (
@@ -143,10 +144,16 @@ s.parentNode.insertBefore(t,s)}(window, document,'script',
 fbq('init', '${process.env.REACT_APP_FBPIXEL}');
 fbq('track', 'PageView');
 ${
-  window.location.href.includes("/address")
+  window.location.href.includes("/payment")
     ? 'fbq("track", "InitiateCheckout");'
     : ""
 };
+${
+  window.location.href.includes("/order-comfirmation")
+    ? 'fbq("track", "Purchase");'
+    : ""
+};
+
 `}
             </script>
           </Helmet>
@@ -204,7 +211,7 @@ ${
                     width={24}
                   >
                     <path
-                      fill="#fff"
+                      fill="#000"
                       fillRule="evenodd"
                       d="M20.25 11.25H5.555l6.977-6.976a.748.748 0 000-1.056.749.749 0 00-1.056 0L3.262 11.43A.745.745 0 003 12a.745.745 0 00.262.57l8.214 8.212a.75.75 0 001.056 0 .748.748 0 000-1.056L5.555 12.75H20.25a.75.75 0 000-1.5"
                     ></path>
@@ -257,7 +264,7 @@ ${
                     width={24}
                   >
                     <path
-                      fill="#fff"
+                      fill="#000000"
                       fillRule="evenodd"
                       d="M20.25 11.25H5.555l6.977-6.976a.748.748 0 000-1.056.749.749 0 00-1.056 0L3.262 11.43A.745.745 0 003 12a.745.745 0 00.262.57l8.214 8.212a.75.75 0 001.056 0 .748.748 0 000-1.056L5.555 12.75H20.25a.75.75 0 000-1.5"
                     ></path>
@@ -266,6 +273,8 @@ ${
 
                 <Nav className={"d-flex flex-row align-items-center"}>
                   <Navbar.Brand href="/">
+                    {" "}
+                    {/* dynamic logo use this code */}
                     <img
                       src={logo}
                       height={35}
@@ -282,6 +291,10 @@ ${
             ) : (
               <Nav className={"d-flex flex-row align-items-center"}>
                 <Navbar.Brand href="/">
+                  <i
+                    className="fa-solid fa-bars"
+                    style={{ color: "white" }}
+                  ></i>
                   <img src={logo} height={35} style={{ marginLeft: "15%" }} />
                 </Navbar.Brand>
               </Nav>
@@ -293,39 +306,16 @@ ${
                 <>
                   {!orderComfirm && (
                     <Nav.Link
-                      onClick={() => navigate("/cart")}
-                      className="nav-menu postion-relative"
+                      onClick={() => navigate("/wishlist")}
+                      className="nav-menu"
+                      style={{ marginRight: "30px" }}
                     >
-                      <div
-                        id="notificationCount"
-                        className="animated"
-                        style={{
-                          position: "absolute",
-                          top: "0",
-                          opacity: cartProducts.length > 0 ? 1 : 0,
-                          borderRadius: "50%",
-                          fontWeight: "bold",
-                          width: "18px",
-                          height: "18px",
-                          display: "flex",
-                          justifyContent: "center",
-                          alignItems: "center",
-                          background: "red",
-                          marginLeft: "10px",
-                          color: "#ffffff",
-                        }}
-                      >
-                        {cartProducts.length}
-                      </div>
                       <i
-                        className="fa-solid fa-cart-shopping"
-                        style={{ color: "#fff", marginRight: "30px" }}
+                        className="fa-solid fa-square-plus"
+                        style={{ color: "#000" }}
                       ></i>
                     </Nav.Link>
                   )}
-                </>
-              ) : (
-                <>
                   {!orderComfirm && (
                     <Nav.Link
                       onClick={() => navigate("/cart")}
@@ -347,14 +337,74 @@ ${
                           alignItems: "center",
                           background: "red",
                           marginLeft: "10px",
-                          color: "#ffffff",
+                          color: "#000000",
                         }}
                       >
                         {cartProducts.length}
                       </div>
                       <i
                         className="fa-solid fa-cart-shopping"
-                        style={{ color: "#fff", marginRight: "30px" }}
+                        style={{ color: "#000000", marginRight: "30px" }}
+                      ></i>
+                    </Nav.Link>
+                  )}
+                </>
+              ) : (
+                <>
+                  {isProductDetails || isWhishList ? (
+                    <Nav.Link
+                      className="nav-menu"
+                      style={{ marginRight: "18px" }}
+                    >
+                      <i
+                        className="fa-solid fa-magnifying-glass"
+                        style={{ color: "#000000", marginRight: "20px" }}
+                      ></i>
+                    </Nav.Link>
+                  ) : (
+                    ""
+                  )}
+                  {!orderComfirm && (
+                    <Nav.Link
+                      onClick={() => navigate("/wishlist")}
+                      className="nav-menu"
+                      style={{ marginRight: "30px" }}
+                    >
+                      <i
+                        className="fa-solid fa-square-plus"
+                        style={{ color: "#00000" }}
+                      ></i>
+                    </Nav.Link>
+                  )}
+                  {!orderComfirm && (
+                    <Nav.Link
+                      onClick={() => navigate("/cart")}
+                      className="nav-menu postion-relative"
+                    >
+                      <div
+                        id="notificationCount"
+                        className="animated"
+                        style={{
+                          position: "absolute",
+                          top: "0",
+                          opacity: cartProducts.length > 0 ? 1 : 0,
+                          borderRadius: "50%",
+                          fontWeight: "bold",
+                          width: "18px",
+                          height: "18px",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          background: "red",
+                          marginLeft: "10px",
+                          color: "#000000",
+                        }}
+                      >
+                        {cartProducts.length}
+                      </div>
+                      <i
+                        className="fa-solid fa-cart-shopping"
+                        style={{ color: "#000000", marginRight: "30px" }}
                       ></i>
                     </Nav.Link>
                   )}
@@ -366,6 +416,38 @@ ${
         <Helmet>
           <link rel="icon" href={logo} />
         </Helmet>
+        <Container
+          className={`${
+            isCart ||
+            isCheckout ||
+            isPayment ||
+            isProductDetails ||
+            orderComfirm ||
+            isCategory ||
+            thankYou ||
+            isWhishList
+              ? "d-none"
+              : ""
+          }`}
+        >
+          <div className="search-container">
+           <div className="search-bar">
+          <div className="search-icon-container">
+          <svg className="search-icon" viewBox="0 0 256 256">
+          <path fill="none" d="M0 0h256v256H0z"/>
+          <circle cx="116" cy="116" r="84" fill="none" stroke="#1254E7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="16"/>
+        <path fill="none" stroke="#1254E7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="16" d="M175.4 175.4 224 224"/>
+      </svg>
+    </div>
+    <input 
+      type="text" 
+      className="search-input" 
+      placeholder="Search for Products" 
+    />
+  </div>
+</div>
+        </Container>
+
         {isProductDetails &&
           process.env.REACT_APP_SHOW_OFFER_BANNER == "yes" &&
           singleProduct?._id && (
@@ -374,7 +456,7 @@ ${
                 background: "var(--them-color)",
                 borderColor: "var(--them-color)",
                 fontSize: 20,
-                color: "#fff",
+                color: "#000000",
                 padding: "8px 16px",
                 textAlign: "center",
                 fontWeight: "600",
@@ -387,7 +469,7 @@ ${
           )}
       </Navbar>
       <div className="main-steps">
-        {step && (isCart || isCheckout) ? (
+        {step && (isCart || isCheckout || isPayment) ? (
           <>
             <div className="step-container" />
             <div>
@@ -416,7 +498,7 @@ ${
               </div>
               <p style={{ fontSize: "15px", fontWeight: "500" }}>Address</p>
             </div>
-            {/* <div>
+            <div>
               <div
                 className="step-number m-auto"
                 style={
@@ -428,7 +510,7 @@ ${
                 {step > 3 ? <i className="fa-solid fa-check"></i> : 3}
               </div>
               <p style={{ fontSize: "15px", fontWeight: "500" }}>Payment</p>
-            </div> */}
+            </div>
           </>
         ) : (
           ""

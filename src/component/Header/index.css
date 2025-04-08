@@ -1,14 +1,17 @@
+
 body {
   font-family: "Assistant", sans-serif !important;
 }
 
-#nav-look{
-  border-bottom: 1px solid rgb(206, 206, 222);
+#nav-look {
+  background: #ffffff !important;
+  border-bottom: 0px solid rgb(0, 0, 0);
 }
 
-.form-group{
+.form-group {
   width: 100%;
 }
+
 .animated {
   animation-duration: 1s;
   animation-fill-mode: both;
@@ -25,7 +28,6 @@ body {
 }
 
 @keyframes bounceIn {
-
   0%,
   30%,
   60%,
@@ -75,16 +77,14 @@ body {
   justify-content: center;
   align-items: center;
   font-weight: bold;
-  color: #2874F0;
-  background-color: #FFFFFF;
+  color: #2874f0;
+  background-color: #ffffff;
   margin-right: 10px 10px;
   position: relative;
 }
 .step-container {
-  /* max-width: 65%;
-  min-width: 65%; */
-  max-width: 50%;
-  min-width: 50%;
+  max-width: 65%;
+  min-width: 65%;
   width: 100%;
   margin: auto;
   position: absolute;
@@ -92,15 +92,19 @@ body {
   left: 0;
   top: 12px;
   height: 2px;
-  background-color: #DBDBDB;
+  background-color: #dbdbdb;
 }
 
-
-
-.cls-1{fill:#00a912;}
+.cls-1 {
+  fill: #00a912;
+}
 .cls-1,
-.cls-2{fillRule:evenodd;}
-.cls-2{fill:#fff;}
+.cls-2 {
+  fillrule: evenodd;
+}
+.cls-2 {
+  fill: #fff;
+}
 
 .active {
   color: #9f2089;
@@ -142,7 +146,6 @@ body {
   margin-left: -80px;
 }
 
-
 .zoom-animation {
   animation: zoomInOut 2s ease-in-out infinite alternate;
   /* Animation properties */
@@ -164,7 +167,6 @@ body {
   }
 }
 
-
 .countdown-container {
   display: flex;
   justify-content: center;
@@ -176,8 +178,8 @@ body {
 }
 
 .countdown-box {
-  background-color: #000; 
-  border-radius: 12px; 
+  background-color: #000;
+  border-radius: 12px;
   padding: 12px;
   text-align: center;
   font-size: 10px;
@@ -192,12 +194,80 @@ body {
   color: #333;
 }
 
-.dot-timer{
+.dot-timer {
   color: #000;
   display: flex;
   align-items: center;
 }
 
-.hour-count-text{
-   font-size: 22px;
+.hour-count-text {
+  font-size: 22px;
+}
+
+/* Search Container */
+.search-container {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Search Bar */
+.search-bar {
+  display: flex;
+  align-items: center;
+  border: 2px solid #58abfa; /* Light blue border */
+  border-radius: 12px;
+  background: white;
+  height: 48px;
+  padding: 0 12px;
+  transition: all 0.2s ease;
+}
+
+.search-bar:focus-within {
+  border-color: #1254E7; /* Darker blue when focused */
+  box-shadow: 0 2px 8px rgba(18, 84, 231, 0.2);
+}
+
+/* Search Icon */
+.search-icon-container {
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.search-icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* Search Input */
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 16px;
+  color: #212121;
+  height: 100%;
+  background: transparent;
+}
+
+.search-input::placeholder {
+  color: #999;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .search-bar {
+    height: 44px;
+    border-radius: 8px;
+  }
+  
+  .search-icon {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .search-input {
+    font-size: 14px;
+  }
 }
