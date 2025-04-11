@@ -5,6 +5,8 @@ import "./index.css";
 const Footer = () => {
   const navigate = useNavigate();
   const currentYear = new Date().getFullYear();
+  const isFlipAssured = process.env.REACT_APP_FLIPASSURED_IMAGE === "yes";
+  const domainName = window.location.hostname;
 
   return (
     <div className="footer-full-width">
@@ -70,7 +72,7 @@ const Footer = () => {
       </div>
 
       <div className="footer-copyright">
-        © {currentYear} Flipkart. All rights reserved.
+        © {currentYear} {isFlipAssured ? "Flipkart" : domainName}. All rights reserved.
       </div>
     </div>
   );
