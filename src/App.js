@@ -1,6 +1,6 @@
 import "./App.css";
 import AppRouters from "./Router";
-import AdSenseAutoAds from './components/AdSenseAutoAds';
+import AdSenseAutoAds from './component/AdSenseAutoAds';
 
 function App() {
     return (
