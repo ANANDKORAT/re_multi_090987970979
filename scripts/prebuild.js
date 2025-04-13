@@ -13,7 +13,7 @@ if (!publisherId) {
 }
 
 // Create ads.txt content
-const adsContent = `google.com, ${publisherId}, DIRECT, f08c47fec0942fa0\n`;
+const adsContent = `google.com, ${publisherId}\n`;
 
 try {
   // Ensure the public directory exists
