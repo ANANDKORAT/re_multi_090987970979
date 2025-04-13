@@ -31,25 +31,11 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
 
-    <!-- <script>
-
-      document.addEventListener("contextmenu", function (e) {
-        e.preventDefault();
-      });
-
-      // Disable F12 key
-      document.onkeydown = function (e) {
-        if (
-          e.keyCode == 123 ||
-          (e.ctrlKey && e.shiftKey && e.keyCode === 67) ||
-          (e.ctrlKey && e.shiftKey && e.keyCode == 73) ||
-          (e.ctrlKey && e.keyCode == 67)
-        ) {
-          return false;
-        }
-      };
-    </script> -->
-    <title>Sale Now </title>
+    <title>Sale Now</title>
+    <script>
+      // Dynamically set the title based on the domain
+      document.title = `${window.location.hostname} - Sale Now`;
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
