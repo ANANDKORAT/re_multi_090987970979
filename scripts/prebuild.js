@@ -1,8 +1,10 @@
 // scripts/prebuild.js
 const fs = require('fs');
 const path = require('path');
+require('dotenv').config(); // Ensure dotenv is loaded at the top
 
-// Read environment variable
+// Log the environment variable for debugging
+console.log('Checking REACT_APP_ADSENSE_PUBLISHER_ID...');
 const publisherId = process.env.REACT_APP_ADSENSE_PUBLISHER_ID;
 
 if (!publisherId) {
@@ -13,10 +15,21 @@ if (!publisherId) {
 // Create ads.txt content
 const adsContent = `google.com, ${publisherId}, DIRECT, f08c47fec0942fa0\n`;
 
-// Write to public/ads.txt
-fs.writeFileSync(
-  path.join(__dirname, '../public/ads.txt'), 
-  adsContent
-);
+try {
+  // Ensure the public directory exists
+  const publicDir = path.join(__dirname, '../public');
+  if (!fs.existsSync(publicDir)) {
+    console.error('Error: public directory does not exist');
+    process.exit(1);
+  }
 
-console.log('ads.txt generated successfully');
+  // Write to public/ads.txt
+  fs.writeFileSync(
+    path.join(publicDir, 'ads.txt'),
+    adsContent
+  );
+  console.log('ads.txt generated successfully');
+} catch (error) {
+  console.error('Error writing ads.txt:', error);
+  process.exit(1);
+}

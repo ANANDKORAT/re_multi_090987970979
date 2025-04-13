@@ -1,0 +1,1 @@
+google.com, ca-pub-9090909090909090, DIRECT, f08c47fec0942fa0
