@@ -1,1 +1,1 @@
-google.com, <%= process.env.ADSENSE_PUBLISHER_ID %>, DIRECT, f08c47fec0942fa0
+google.com, REPLACE_WITH_PUBLISHER_ID, DIRECT, f08c47fec0942fa0
