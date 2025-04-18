@@ -15,6 +15,7 @@ import ProductCard from "../ProductCard";
 import animaionImageHOme from "../../assets/2f53o.gif";
 import Countdown from "react-countdown";
 import OfferCountdown from "../Header/OfferCountdown";
+import AdSenseUnit from "../AdSenseUnit";
 
 /**
  * Home Component
@@ -232,8 +233,8 @@ const Home = () => {
           {sliderImages?.length > 0 && (
             <Col md={12} xs={12} className="position-relative p-0" style={{ paddingRight: 0, paddingLeft: 0 }}>
               <div ref={sliderRef} className="keen-slider" style={{ borderRadius: '8px', overflow: 'hidden', margin: '0' }}>
-                {sliderImages?.map((item) => (
-                  <div className="keen-slider__slide number-slide1">
+                {sliderImages?.map((item, index) => (
+                  <div key={`slide-${index}`} className="keen-slider__slide number-slide1">
                     <Image src={item} rounded style={{ width: "100%" }} />
                   </div>
                 ))}
@@ -319,10 +320,10 @@ const Home = () => {
             </Col>
           </Row>
         ) : (
-          productsArray?.map((item) => {
+          productsArray?.map((item, index) => {
             return (
               item?.products?.length > 0 && (
-                <div style={{ marginBottom: '1px' }}>
+                <div key={`category-${item._id || index}`} style={{ marginBottom: '1px' }}>
                   <h4 className="card-title text-center fw-bold" style={{ margin: '5px 5px' }}>{`${item.categoryName} Collection`}</h4>
                   <Row xs={2} md={2} className="g-0" style={{ marginTop: '1px' }}>
                     {item.products.map((product, index) => (
@@ -357,6 +358,11 @@ const Home = () => {
             );
           })
         )}
+
+        {/* Add advertisement section */}
+        <div className="my-4">
+          <AdSenseUnit />
+        </div>
       </Container>
     </div>
   );

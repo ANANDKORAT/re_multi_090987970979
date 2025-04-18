@@ -25,6 +25,7 @@ import replacement from "../../assets/replacement.jpg";
 import assured from "../../assets/assuredflipcart.jpg";
 
 import noncod from "../../assets/non-cod.jpg";
+import AdSenseUnit from "../AdSenseUnit";
 
 /* Thumbnail Plugin Configuration */
 function ThumbnailPlugin(mainRef) {
@@ -538,6 +539,11 @@ const SingleProduct = () => {
                     />
                   </div>
                 )}
+
+                {/* Add advertisement section */}
+                <div className="my-4">
+                  <AdSenseUnit adFormat="rectangle" />
+                </div>
 
                 {/* Trust Badges */}
                 <div className="trust-badges mt-3 mb-3">
