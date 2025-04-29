@@ -85,17 +85,25 @@ const Payment = () => {
     // Use the REACT_APP_PAYMENT_API environment variable
     let apiEndpoint = process.env.REACT_APP_PAYMENT_API;
     
-    // Add appropriate protocol
-    const protocol = apiEndpoint.includes('localhost') ? 'http' : 'https';
-    
-    // Remove any trailing slash if present
-    apiEndpoint = apiEndpoint.replace(/\/$/, '');
-    
-    // Construct the payment URL
-    const paymentUrl = `${protocol}://${apiEndpoint}/api/phonepay/process-payment?domain=${domain}&amount=${amount}&merchantOrderId=${merchantOrderId}`;
-    
-    // Use window.location.href instead of window.open for consistent behavior
-    window.location.href = paymentUrl;
+    // Check if apiEndpoint already contains http:// or https://
+    if (!apiEndpoint.startsWith('http://') && !apiEndpoint.startsWith('https://')) {
+      // Add appropriate protocol
+      const protocol = apiEndpoint.includes('localhost') ? 'http' : 'https';
+      // Remove any trailing slash if present
+      apiEndpoint = apiEndpoint.replace(/\/$/, '');
+      // Construct the payment URL with proper formatting
+      const paymentUrl = `${protocol}://${apiEndpoint}/api/phonepay/process-payment?domain=${domain}&amount=${amount}&merchantOrderId=${merchantOrderId}`;
+      // Use window.location.href for redirection
+      window.location.href = paymentUrl;
+    } else {
+      // If apiEndpoint already has the protocol, just use it directly
+      // Remove any trailing slash if present
+      apiEndpoint = apiEndpoint.replace(/\/$/, '');
+      // Construct the payment URL
+      const paymentUrl = `${apiEndpoint}/api/phonepay/process-payment?domain=${domain}&amount=${amount}&merchantOrderId=${merchantOrderId}`;
+      // Use window.location.href for redirection
+      window.location.href = paymentUrl;
+    }
   };
 
   // Render payment options and order details

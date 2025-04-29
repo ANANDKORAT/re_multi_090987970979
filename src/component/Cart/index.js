@@ -70,17 +70,25 @@ const Cart = () => {
     // Use the REACT_APP_PAYMENT_API environment variable
     let apiEndpoint = process.env.REACT_APP_PAYMENT_API;
     
-    // Add appropriate protocol
-    const protocol = apiEndpoint.includes('localhost') ? 'http' : 'https';
-    
-    // Remove any trailing slash if present
-    apiEndpoint = apiEndpoint.replace(/\/$/, '');
-    
-    // Construct the payment URL
-    const successUrl = `${protocol}://${apiEndpoint}/api/phonepay/process-payment?domain=${domainname}&amount=${totalPrice}&merchantOrderId=${merchantOrderId}`;
-    
-    localStorage.setItem('isLoading', true);
-    window.location.href = successUrl;
+    // Check if apiEndpoint already contains http:// or https://
+    if (!apiEndpoint.startsWith('http://') && !apiEndpoint.startsWith('https://')) {
+      // Add appropriate protocol
+      const protocol = apiEndpoint.includes('localhost') ? 'http' : 'https';
+      // Remove any trailing slash if present
+      apiEndpoint = apiEndpoint.replace(/\/$/, '');
+      // Construct the payment URL with proper formatting
+      const successUrl = `${protocol}://${apiEndpoint}/api/phonepay/process-payment?domain=${domainname}&amount=${totalPrice}&merchantOrderId=${merchantOrderId}`;
+      localStorage.setItem('isLoading', true);
+      window.location.href = successUrl;
+    } else {
+      // If apiEndpoint already has the protocol, just use it directly
+      // Remove any trailing slash if present
+      apiEndpoint = apiEndpoint.replace(/\/$/, '');
+      // Construct the payment URL
+      const successUrl = `${apiEndpoint}/api/phonepay/process-payment?domain=${domainname}&amount=${totalPrice}&merchantOrderId=${merchantOrderId}`;
+      localStorage.setItem('isLoading', true);
+      window.location.href = successUrl;
+    }
   };
 
   const handlePaymentFailure = () => {
@@ -89,14 +97,23 @@ const Cart = () => {
     // Use the REACT_APP_PAYMENT_API environment variable
     let apiEndpoint = process.env.REACT_APP_PAYMENT_API;
     
-    // Add appropriate protocol
-    const protocol = apiEndpoint.includes('localhost') ? 'http' : 'https';
-    
-    // Remove any trailing slash if present
-    apiEndpoint = apiEndpoint.replace(/\/$/, '');
-      
-    const failUrl = `${protocol}://${apiEndpoint}/api/phonepay/process-payment?domain=${paramData.domainname}&amount=${paramData.amount}&name=${paramData.name}&status=fail&mobile=${paramData.mobile}`;
-    window.location.href = failUrl;
+    // Check if apiEndpoint already contains http:// or https://
+    if (!apiEndpoint.startsWith('http://') && !apiEndpoint.startsWith('https://')) {
+      // Add appropriate protocol
+      const protocol = apiEndpoint.includes('localhost') ? 'http' : 'https';
+      // Remove any trailing slash if present
+      apiEndpoint = apiEndpoint.replace(/\/$/, '');
+      // Construct the payment URL with proper formatting
+      const failUrl = `${protocol}://${apiEndpoint}/api/phonepay/process-payment?domain=${paramData.domainname}&amount=${paramData.amount}&name=${paramData.name}&status=fail&mobile=${paramData.mobile}`;
+      window.location.href = failUrl;
+    } else {
+      // If apiEndpoint already has the protocol, just use it directly
+      // Remove any trailing slash if present
+      apiEndpoint = apiEndpoint.replace(/\/$/, '');
+      // Construct the payment URL
+      const failUrl = `${apiEndpoint}/api/phonepay/process-payment?domain=${paramData.domainname}&amount=${paramData.amount}&name=${paramData.name}&status=fail&mobile=${paramData.mobile}`;
+      window.location.href = failUrl;
+    }
   };
 
   if (localStorage.getItem('isLoading') == true) {
@@ -669,7 +686,7 @@ const Cart = () => {
                       >{`(${(
                         ((showOffCanvas?.product?.price -
                           showOffCanvas?.product.discount) /
-                          showOffCanvas?.product?.price) *
+                          showOffcanvas?.product?.price) *
                         100
                       ).toFixed(0)})% OFF`}</span>
                     </p>
