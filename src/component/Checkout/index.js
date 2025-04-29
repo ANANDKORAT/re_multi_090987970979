@@ -41,10 +41,14 @@ const Checkout = () => {
     setAddress(values);
     setHideAddress(true);
     setStep(3);
-    // navigate("/checkout/payment", { state: { values } });
+    // Navigate back to cart with the address and routeChange flag
     setRouteChange(true);
-    navigate("/cart", { state: { routeChange: true, address: values } });
-    console.log("full name>>>>>>>>>>>>", values.fullname);
+    navigate("/cart", { 
+      state: { 
+        routeChange: true, 
+        address: values 
+      } 
+    });
   };
   const [initialValues, setInitialValues] = useState({
     ...defaultLensSettingValue,
@@ -388,7 +392,7 @@ const Checkout = () => {
           onClick={() => {
             if (hideAddress) {
               setStep(3);
-              navigate("/checkout/payment", { state: { initialValues } });
+              navigate("/cart", { state: { routeChange: true, address: address } });
             } else {
               formikRef?.current?.submitForm();
             }

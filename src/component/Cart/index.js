@@ -61,20 +61,42 @@ const Cart = () => {
     return data;
   };
 
-  const handlePaymentFailure = async () => {
-    const paramData = await paramValueGet();
-
-    const failUrl = `${process.env.REACT_APP_PHONEPE_GETWAY_URL}/multipayment?paymentstatus=fail&amount=${paramData.amount}&address=${paramData.name}&mobileno=${paramData.mobile}&domainname=${paramData.domainname}`;
-    window.location.href = failUrl;
-  };
-
   const handlePaymentSuccess = () => {
     setLoading(true);
     const domainname = window.location.hostname;
+    // Generate a unique merchantOrderId
+    const merchantOrderId = `MUID-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
 
-    const successUrl = `${process.env.REACT_APP_PHONEPE_GETWAY_URL}/multipayment?amount=${totalPrice}&name=${address.fullname}&mobileno=${address.mobile}&domainname=${domainname}`;
+    // Use the REACT_APP_PAYMENT_API environment variable
+    let apiEndpoint = process.env.REACT_APP_PAYMENT_API;
+    
+    // Add appropriate protocol
+    const protocol = apiEndpoint.includes('localhost') ? 'http' : 'https';
+    
+    // Remove any trailing slash if present
+    apiEndpoint = apiEndpoint.replace(/\/$/, '');
+    
+    // Construct the payment URL
+    const successUrl = `${protocol}://${apiEndpoint}/api/phonepay/process-payment?domain=${domainname}&amount=${totalPrice}&merchantOrderId=${merchantOrderId}`;
+    
     localStorage.setItem('isLoading', true);
     window.location.href = successUrl;
+  };
+
+  const handlePaymentFailure = () => {
+    const paramData = JSON.parse(localStorage.getItem("paramData") || "{}");
+    
+    // Use the REACT_APP_PAYMENT_API environment variable
+    let apiEndpoint = process.env.REACT_APP_PAYMENT_API;
+    
+    // Add appropriate protocol
+    const protocol = apiEndpoint.includes('localhost') ? 'http' : 'https';
+    
+    // Remove any trailing slash if present
+    apiEndpoint = apiEndpoint.replace(/\/$/, '');
+      
+    const failUrl = `${protocol}://${apiEndpoint}/api/phonepay/process-payment?domain=${paramData.domainname}&amount=${paramData.amount}&name=${paramData.name}&status=fail&mobile=${paramData.mobile}`;
+    window.location.href = failUrl;
   };
 
   if (localStorage.getItem('isLoading') == true) {
@@ -90,6 +112,14 @@ const Cart = () => {
       handlePaymentSuccess();
     }
   };
+
+  // Automatically trigger payment process if user came from address page with routeChange flag
+  useEffect(() => {
+    if (routeChange && address) {
+      payNow();
+    }
+  }, [routeChange, address]);
+
   localStorage.setItem("totalPrice", totalPrice);
 
   if (loading) {
@@ -307,7 +337,7 @@ const Cart = () => {
                     >
                       <path
                         fill="#FF3F6C"
-                        d="M7.998 4c-2.674 0-5.1 1.57-6.888 4.12a.625.625 0 000 .709c1.789 2.552 4.214 4.122 6.888 4.122 2.674 0 5.099-1.57 6.888-4.12a.629.629 0 000-.709C13.096 5.57 10.672 4 7.998 4zm.192 7.627c-1.775.12-3.241-1.45-3.13-3.357.092-1.573 1.28-2.848 2.746-2.946 1.775-.12 3.24 1.45 3.13 3.357-.095 1.57-1.283 2.845-2.746 2.946zm-.09-1.456c-.955.064-1.746-.78-1.683-1.806.05-.848.69-1.533 1.48-1.588.957-.065 1.747.78 1.684 1.806-.051.85-.693 1.536-1.48 1.588z"
+                        d="M7.998 4c-2.674 0-5.1 1.57-6.888 4.12a.625.625 0 0 0 0 .709c1.789 2.552 4.214 4.122 6.888 4.122 2.674 0 5.099-1.57 6.888-4.12a.629.629 0 0 0 0-.709C13.096 5.57 10.672 4 7.998 4zm.192 7.627c-1.775.12-3.241-1.45-3.13-3.357.092-1.573 1.28-2.848 2.746-2.946 1.775-.12 3.24 1.45 3.13 3.357-.095 1.57-1.283 2.845-2.746 2.946zm-.09-1.456c-.955.064-1.746-.78-1.683-1.806.05-.848.69-1.533 1.48-1.588.957-.065 1.747.78 1.684 1.806-.051.85-.693 1.536-1.48 1.588z"
                       ></path>
                     </svg>
                     <span

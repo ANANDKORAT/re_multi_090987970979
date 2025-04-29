@@ -1,176 +1,160 @@
-import { useEffect, useRef, useState } from "react";
-import "./index.css";
-import Spinner from "react-bootstrap/Spinner";
-import Container from "react-bootstrap/Container";
-import Button from "react-bootstrap/Button";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
-import axios from "axios";
+import { useEffect, useState } from "react";
+import "./payment.css";
+import { Container } from "react-bootstrap";
+import { useLocation } from "react-router-dom";
+import AdSenseUnit from "../AdSenseUnit";
 
+/**
+ * Payment Component
+ * 
+ * This component manages the payment options and checkout flow.
+ * It displays payment methods, handles order data from previous steps,
+ * and prepares the redirect to the payment gateway.
+ * 
+ * Key Features:
+ * - Displays payment options (PhonePe)
+ * - Shows order summary and details
+ * - Manages state for customer details and order information
+ * - Handles the payment initiation process
+ */
 const Payment = () => {
-  const {
-    selectedProduct,
-    totalPrice,
-    totalDiscount,
-    totalMRP,
-    totalExtraDiscount,
-    isPaymentPageLoading,
-    setIsPaymentPageLoading,
-  } = useAuth();
-
-  const navigate = useNavigate();
-  const ref = useRef(null);
-
+  // Get location object to access state passed from previous page
   const location = useLocation();
-  const userData = location.state.initialValues;
+  
+  // State to store customer information and order details
+  const [customerInfo, setCustomerInfo] = useState({
+    name: "",
+    mobile: "",
+    email: "",
+    address: "",
+    city: "",
+    pincode: "",
+    state: "",
+    productName: "",
+    quantity: "",
+    price: "",
+  });
 
-  const [loading, setLoading] = useState(false);
+  /**
+   * Initialize customer information from location state when component mounts
+   * This data is passed from the previous checkout step
+   */
+  useEffect(() => {
+    // Check if location contains state data and update customer information
+    if (location.state) {
+      const {
+        name,
+        mobile,
+        email,
+        address,
+        city,
+        pincode,
+        state,
+        productName,
+        quantity,
+        price,
+      } = location.state;
 
-  const payNow = async () => { 
-    window.location.href =(`${process.env.REACT_APP_PHONEPE_GETWAY_URL}/multipayment?amount=${totalPrice}&address=${userData.fullname}&mobileno=${userData.mobile}&domainname=${window.location.hostname}`); 
+      // Update state with customer and order information
+      setCustomerInfo({
+        name,
+        mobile,
+        email,
+        address,
+        city,
+        pincode,
+        state,
+        productName,
+        quantity,
+        price,
+      });
+    }
+  }, [location]);
+
+  /**
+   * Handle payment initiation for PhonePe
+   * Constructs URL with required parameters and redirects to payment processing
+   */
+  const handlePayment = () => {
+    // Calculate the final amount (based on price and quantity)
+    const amount = customerInfo.price * customerInfo.quantity;
+    const domain = window.location.hostname;
+    // Generate a unique merchantOrderId
+    const merchantOrderId = `MUID-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
+
+    // Use the REACT_APP_PAYMENT_API environment variable
+    let apiEndpoint = process.env.REACT_APP_PAYMENT_API;
     
+    // Add appropriate protocol
+    const protocol = apiEndpoint.includes('localhost') ? 'http' : 'https';
+    
+    // Remove any trailing slash if present
+    apiEndpoint = apiEndpoint.replace(/\/$/, '');
+    
+    // Construct the payment URL
+    const paymentUrl = `${protocol}://${apiEndpoint}/api/phonepay/process-payment?domain=${domain}&amount=${amount}&merchantOrderId=${merchantOrderId}`;
+    
+    // Use window.location.href instead of window.open for consistent behavior
+    window.location.href = paymentUrl;
   };
 
-  localStorage.setItem("totalPrice", totalPrice);
-
-  return isPaymentPageLoading ? (
-    <Container
-      className="p-0 pt-3 pb-3 flex-column position-relative d-flex justify-content-center align-items-center"
-      style={{ background: "#f2f2f3", height: "250px" }}
-    >
-      <div>Please Wait...</div>
-      <Spinner />
-    </Container>
-  ) : (
-    <>
-     
-      <Container
-        className="p-0 pt-3 pb-3 position-relative d-flex flex-column justify-content-between"
-        style={{ background: "#f2f2f3" }}
-      >
-        <div>
-          <div className="mt-3">
-            {selectedProduct?.length && (
-              <div className="bg-white px-4 py-4">
-                <h6
-                  id="product_details"
-                  className="card-title text-start fw-bold border-bottom pb-2"
-                >{`PRICE DETAILS (${
-                  selectedProduct?.length === 1
-                    ? "1 Item"
-                    : `${selectedProduct?.length} Items`
-                })`}</h6>
-                <div className="mt-3">
-                  <div className="d-flex flex-row justify-content-between align-items-center ">
-                    <span>Total MRP</span>
-                    <span className="ms-2">
-                      <span>
-                        <span className="">₹</span>
-                        {totalMRP}
-                      </span>
-                    </span>
-                  </div>
-                  {totalDiscount ? (
-                    <div className="d-flex flex-row justify-content-between align-items-center mt-2">
-                      <span>Discount on MRP</span>
-                      <span className="ms-2 text-success">
-                        <span>
-                          - <span className="">₹</span>
-                          {totalDiscount}
-                        </span>
-                      </span>
-                    </div>
-                  ) : (
-                    ""
-                  )}
-                  {totalExtraDiscount &&
-                  process.env.REACT_APP_COUPON_APPLY == "true" ? (
-                    <>
-                      <div className="d-flex flex-row justify-content-between align-items-center mt-2 border-top pt-2">
-                        <span>Total Price</span>
-                        <span className="ms-2">
-                          <span>
-                            <span className="">₹</span>
-                            {totalMRP - totalDiscount}
-                          </span>
-                        </span>
-                      </div>
-                      <div className="d-flex flex-row justify-content-between align-items-center mt-2 ">
-                        <span>Coupon Applied (Buy 2 Get 1 free)</span>
-                        <span className="ms-2 text-success">
-                          <span>
-                            -<span className="">₹</span>
-                            {totalExtraDiscount}
-                          </span>
-                        </span>
-                      </div>
-                    </>
-                  ) : (
-                    ""
-                  )}
-                  <div className="d-flex flex-row justify-content-between align-items-center mt-2 fw-bold border-top pt-3">
-                    <span>Total Amount</span>
-                    <span className="ms-2">
-                      <span>
-                        <span className="">₹</span>
-                        {totalPrice}
-                      </span>
-                    </span>
-                  </div>
-                </div>
+  // Render payment options and order details
+  return (
+    <Container>
+      {/* Ad unit for monetization */}
+      <AdSenseUnit />
+      
+      <div className="payment-option-wrapper">
+        <div className="payment-option">
+          <h3>Select Payment Method</h3>
+          
+          {/* Payment method selection - Currently only PhonePe */}
+          <div className="payment-option-inner">
+            {/* PhonePe payment option */}
+            <div className="checkbox-wrapper">
+              <div className="checkbox">
+                {/* Default checked as it's the only option */}
+                <input type="radio" name="payment" value="PhonePe" defaultChecked />
+                <label>UPI - PhonePe (Recommended)</label>
               </div>
-            )}
+              <div className="image">
+                <img
+                  src="https://cdn-icons-png.flaticon.com/512/270/270799.png"
+                  alt="PhonePe"
+                />
+              </div>
+            </div>
+            
+            {/* Payment button that initiates the payment process */}
+            <div className="payment-btn">
+              <button onClick={handlePayment}>Pay Now ₹ {customerInfo.price * customerInfo.quantity}</button>
+            </div>
           </div>
         </div>
 
-        <div
-          className="position-sticky bottom-0 pb-3 bg-white px-4 mt-3 py-4 d-flex align-content-center justify-content-between"
-          id="payment_bottom_block"
-        >
-          <div
-            style={{
-              display: "inline-block",
-              fontSize: "16px",
-              fontWeight: 700,
-              color: "#282c3f",
-              textAlign: "start",
-            }}
-          >
-            <h6
-              className="mb-0"
-              style={{ fontWeight: "bold", fontSize: "22px" }}
-            >
-              ₹{totalPrice}
-            </h6>
-            <a
-              href="#product_details"
-              style={{
-                fontSize: "12px",
-                textDecoration: "none",
-                color: "#ff3f6c",
-                fontWeight: 700,
-                cursor: "pointer",
-              }}
-            >
-              VIEW DETAILS
-            </a>
+        {/* Order Summary Section */}
+        <div className="payment-summery">
+          <h3>Order Summary</h3>
+          <div className="payment-summery-inner">
+            {/* Display product and pricing details */}
+            <div className="price-text">
+              <p>
+                {customerInfo.productName} ({customerInfo.quantity} Qty.)
+              </p>
+              <p>₹ {customerInfo.price * customerInfo.quantity}</p>
+            </div>
+            <div className="price-text">
+              <p>Delivery</p>
+              <p>₹ 0</p>
+            </div>
+            <div className="price-text border-top">
+              <h5>Total</h5>
+              <h5>₹ {customerInfo.price * customerInfo.quantity}</h5>
+            </div>
           </div>
-          <Button
-            className="d-flex justify-content-center align-items-center"
-            variant="dark"
-            style={{
-              width: "60%",
-              padding: "10px",
-              background: "var(--them-color)",
-              borderColor: "var(--them-color)",
-            }}
-            onClick={() => payNow()}
-          >
-            PAY NOW
-          </Button>
         </div>
-      </Container>
-    </>
+      </div>
+    </Container>
   );
 };
 

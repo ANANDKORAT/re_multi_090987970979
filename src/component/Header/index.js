@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import "./index.css";
 import Navbar from "react-bootstrap/Navbar";
@@ -16,7 +15,7 @@ const Header = () => {
   const [isCheckout, setIsCheckout] = useState(false);
   const [isProductDetails, setIsProductDetails] = useState(false);
   const [isCategory, setIsCategory] = useState(false);
-  const [isPayment, setIsPayment] = useState(false);
+  const [isPayment, setIsPayment] = useState(false);  // Added missing state
   const [isWhishList, setIsWhishList] = useState(false);
   const [thankYou, setThankYou] = useState(false);
   const [orderComfirm, setOrderComfirm] = useState(false);
@@ -34,7 +33,6 @@ const Header = () => {
   useEffect(() => {
     setIsCart(location.pathname.indexOf("/cart") > -1);
     setIsCheckout(location.pathname.indexOf("/checkout/address") > -1);
-    setIsPayment(location.pathname.indexOf("/checkout/payment") > -1);
     setIsProductDetails(location.pathname.indexOf("/single-product") > -1);
     setIsCategory(location.pathname.indexOf("/category") > -1);
     setIsWhishList(location.pathname.indexOf("/wishlist") > -1);
@@ -240,7 +238,6 @@ ${
           <Container>
             {isCart ||
             isCheckout ||
-            isPayment ||
             isProductDetails ||
             isCategory ||
             orderComfirm ||
