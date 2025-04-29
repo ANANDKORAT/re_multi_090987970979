@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import "./index.css";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import Card from "react-bootstrap/Card";
@@ -10,13 +10,12 @@ import Button from "react-bootstrap/Button";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import safetyImg from "../../assets/safety-image.jpg";
-import axios from "axios";
 import { Spinner } from "react-bootstrap";
 
 
 
 const Cart = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   const {
     cartProducts,
@@ -46,22 +45,23 @@ const Cart = () => {
     if (cartProducts?.length > 0) {
       setSelectedProduct(cartProducts);
     }
-  }, [cartProducts]);
+  }, [cartProducts, setSelectedProduct]);
 
   const location = useLocation();
   const { routeChange, address } = location.state || {};
 
-  const paramValueGet = () => {
-    const data = {
-      amount: searchParams.get("amount"),
-      name: searchParams.get("name"),
-      mobile: searchParams.get("mobileno"),
-      domainname: window.location.hostname,
-    };
-    return data;
-  };
+  // Remove or comment out the unused function
+  // const paramValueGet = () => {
+  //   const data = {
+  //     amount: searchParams.get("amount"),
+  //     name: searchParams.get("name"),
+  //     mobile: searchParams.get("mobileno"),
+  //     domainname: window.location.hostname,
+  //   };
+  //   return data;
+  // };
 
-  const handlePaymentSuccess = () => {
+  const handlePaymentSuccess = useCallback(() => {
     setLoading(true);
     const domainname = window.location.hostname;
     // Generate a unique merchantOrderId
@@ -89,9 +89,9 @@ const Cart = () => {
       localStorage.setItem('isLoading', true);
       window.location.href = successUrl;
     }
-  };
+  }, [totalPrice]);
 
-  const handlePaymentFailure = () => {
+  const handlePaymentFailure = useCallback(() => {
     const paramData = JSON.parse(localStorage.getItem("paramData") || "{}");
     
     // Use the REACT_APP_PAYMENT_API environment variable
@@ -114,28 +114,28 @@ const Cart = () => {
       const failUrl = `${apiEndpoint}/api/phonepay/process-payment?domain=${paramData.domainname}&amount=${paramData.amount}&name=${paramData.name}&status=fail&mobile=${paramData.mobile}`;
       window.location.href = failUrl;
     }
-  };
+  }, []);
 
-  if (localStorage.getItem('isLoading') == true) {
+  if (localStorage.getItem('isLoading') === 'true') {
     setLoading(false);
     localStorage.setItem('isLoading', '');
   }
 
-  const payNow = async () => {
+  const payNow = useCallback(async () => {
     const paymentStatus = searchParams.get("paymentstatus");
     if (paymentStatus === "fail") {
       handlePaymentFailure();
     } else {
       handlePaymentSuccess();
     }
-  };
+  }, [handlePaymentFailure, handlePaymentSuccess, searchParams]);
 
   // Automatically trigger payment process if user came from address page with routeChange flag
   useEffect(() => {
     if (routeChange && address) {
       payNow();
     }
-  }, [routeChange, address]);
+  }, [routeChange, address, payNow]);
 
   localStorage.setItem("totalPrice", totalPrice);
 
@@ -597,6 +597,7 @@ const Cart = () => {
                 {showOffCanvas.size
                   ? showOffCanvas?.product?.size?.map((item) => (
                       <span
+                        key={item}
                         onClick={(e) => {
                           e?.stopPropagation();
                           setShowOffCanvas((prev) => ({
@@ -611,11 +612,11 @@ const Cart = () => {
                           border: "1px solid black",
                           padding: "25px",
                           background:
-                            showOffCanvas?.product?.selectSize == item
+                            showOffCanvas?.product?.selectSize === item
                               ? themColor
                               : "#fff",
                           color:
-                            showOffCanvas?.product?.selectSize == item
+                            showOffCanvas?.product?.selectSize === item
                               ? "#fff"
                               : "#000",
                         }}
@@ -640,11 +641,11 @@ const Cart = () => {
                           border: "1px solid black",
                           padding: "25px",
                           background:
-                            showOffCanvas?.product?.quantity == item
+                            showOffCanvas?.product?.quantity === item
                               ? themColor
                               : "#fff",
                           color:
-                            showOffCanvas?.product?.quantity == item
+                            showOffCanvas?.product?.quantity === item
                               ? "#fff"
                               : "#000",
                         }}
@@ -686,7 +687,7 @@ const Cart = () => {
                       >{`(${(
                         ((showOffCanvas?.product?.price -
                           showOffCanvas?.product.discount) /
-                          showOffcanvas?.product?.price) *
+                          showOffCanvas?.product?.price) *
                         100
                       ).toFixed(0)})% OFF`}</span>
                     </p>
