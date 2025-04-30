@@ -48,7 +48,7 @@ const Cart = () => {
   }, [cartProducts, setSelectedProduct]);
 
   const location = useLocation();
-  const { routeChange, address } = location.state || {};
+  const { routeChange } = location.state || {};
 
   // Remove or comment out the unused function
   // const paramValueGet = () => {
@@ -129,13 +129,6 @@ const Cart = () => {
       handlePaymentSuccess();
     }
   }, [handlePaymentFailure, handlePaymentSuccess, searchParams]);
-
-  // Automatically trigger payment process if user came from address page with routeChange flag
-  useEffect(() => {
-    if (routeChange && address) {
-      payNow();
-    }
-  }, [routeChange, address, payNow]);
 
   localStorage.setItem("totalPrice", totalPrice);
 
@@ -537,7 +530,7 @@ const Cart = () => {
                   ""
                 )}
                 {totalExtraDiscount &&
-                process.env.REACT_APP_COUPON_APPLY == "true" ? (
+                process.env.REACT_APP_COUPON_APPLY === "true" ? (
                   <>
                     <div className="d-flex flex-row justify-content-between align-items-center mt-2 border-top pt-2">
                       <span>Total Price</span>
